@@ -1,0 +1,46 @@
+package tests;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import data.Loadpropirties;
+import pages.HomePage;
+import pages.Loginpage;
+import pages.UserRegistrationPage;
+
+public class UserRegistrationTestDDTPropirtiesFile extends TestBase
+{
+	HomePage homepageobject;
+	UserRegistrationPage registerobject;
+	Loginpage loginobject;
+	String fn=Loadpropirties.userData.getProperty("firstname");
+	String ln=Loadpropirties.userData.getProperty("lastname");
+	String email=Loadpropirties.userData.getProperty("email");
+	String pass=Loadpropirties.userData.getProperty("pass");
+	@Test(priority = 1, alwaysRun = true)
+	public void userCanRegister() throws InterruptedException
+	{
+		homepageobject=new HomePage(driver);
+		homepageobject.openRegistrationpage();
+		registerobject=new UserRegistrationPage(driver);
+	//	registerobject.userRegisteration("Ghada", "Ahmed","ghadat@gmail.com","123456");
+		registerobject.userRegisteration(ln, fn, email, pass);
+Assert.assertTrue(registerobject.successmessagElement.getText().contains("Your registration completed"));		
+		Thread.sleep(350);
+	}
+@Test (dependsOnMethods = {"userCanRegister"})
+public void RegisterUserCancontnuelogg()
+{
+	registerobject.usercancontuniuelog();
+}
+
+@Test(dependsOnMethods = {"RegisterUserCancontnuelogg"})
+public void RegisterUserCanLogin()
+{
+	homepageobject.openloginPage();
+	loginobject=new Loginpage(driver);
+	loginobject.userLogin("ghadat@gmail.com", "123456");
+	//Assert.assertTrue(registerobject.successmessagElement.getText().contains("Log out"));		
+	
+}
+}
